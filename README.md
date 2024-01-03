@@ -1,12 +1,7 @@
-# Sense_glucose
-The repository contains code for the Sense Project. Contains code from reading teh ECG-Sumamry file from Zephyr folder and then processing it with reading glucose file. the code contains all necessary functions from reading to creating dataset before feeding to CNN and RNN networks
-
-
-
-# Project Title
+# Zephyr_ECG_Summary_Glucose data processing
 
 ## Overview
-This project is a comprehensive suite for [describe the main purpose of the project, e.g., "heart rate variability analysis using deep learning"]. It is structured in a series of steps, each encapsulated in individual Python scripts, to provide a modular and easy-to-understand approach to [main task].
+This project is a comprehensive suite for []. It is structured in a series of steps, each encapsulated in individual Python scripts, to provide a modular and easy-to-understand approach to create datasets to feed to DL networks. The repository contains code for the Sense Project. Contains code from reading the ECG-Sumamry file from Zephyr folder and then processing it with reading glucose file. The code contains all necessary functions from reading to creating a dataset before feeding to CNN and RNN networks
 
 ## Repository Structure
 
