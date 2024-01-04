@@ -3,9 +3,13 @@
 ## Overview
 This project is a comprehensive suite for extracting ECG morphology, RR, and statistical features from Zephyr devices. It is structured in a series of steps, each encapsulated in individual Python scripts, to provide a modular and easy-to-understand approach to creating datasets to feed to DL networks. The repository contains code for the TAMU-Sense Project. Contains code from reading the ECG-Sumamry file from the Zephyr folder and then processing it with the reading glucose file. The code contains all necessary functions, from reading to creating a dataset before feeding it to CNN and RNN networks.
 
-## Repository Structure
+##Repository Structure
 
-### preprocessing data
+### `Python Env Setup`
+Three env YAML files are provided under preprocess
+
+
+### `preprocessing data`
 Zephyr BioHarness provides the following files: 
 1) record_timestamp_ECG.csv
 2) record_timestamp_SummaryEnhanced.csv
