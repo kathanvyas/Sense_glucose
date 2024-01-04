@@ -1,17 +1,27 @@
 # Zephyr_ECG_Summary_Glucose data processing
 
 ## Overview
-This project is a comprehensive suite for []. It is structured in a series of steps, each encapsulated in individual Python scripts, to provide a modular and easy-to-understand approach to create datasets to feed to DL networks. The repository contains code for the Sense Project. Contains code from reading the ECG-Sumamry file from Zephyr folder and then processing it with reading glucose file. The code contains all necessary functions from reading to creating a dataset before feeding to CNN and RNN networks
+This project is a comprehensive suite for extracting ECG morphology, RR, and statistical features from Zephyr devices. It is structured in a series of steps, each encapsulated in individual Python scripts, to provide a modular and easy-to-understand approach to creating datasets to feed to DL networks. The repository contains code for the TAMU-Sense Project. Contains code from reading the ECG-Sumamry file from the Zephyr folder and then processing it with the reading glucose file. The code contains all necessary functions, from reading to creating a dataset before feeding it to CNN and RNN networks.
 
 ## Repository Structure
 
+### preprocessing data
+Zephyr BioHarness provides the following files: 
+1) record_timestamp_ECG.csv
+2) record_timestamp_SummaryEnhanced.csv
+
+You should also have one glucose file. Ensure the glucose file contains no missing values and only numerical values in the glucose column. you can use preprocessing/helper_glucose.py
+
+Run the file preprocessing/ECG_read_and_combine.py -> This reads all ECG.csv files and combines them in one single pickle file.
+
+
 ### `step1_create_beats.py`
-- **Description**: [Brief description of the file's purpose, e.g., "This script generates heartbeats from raw data."]
+- **Description**: The ECG.pkl (combined all ecg files), summary.pkl (combined all summary files) and glucose.pkl file. The Python file creates separate beats from all the input files. it checks for HRConfidence, and ECGnoise and also develops variable length beats. This will generate a hypo_label that corresponds to the hypo vs normal glucose classification problem
 - **Usage**: `python step1_create_beats.py [arguments]`
 - **Key Functions**: [List key functions, e.g., "create_beats", "filter_noise"]
 
 ### `step1_create_beats_hyper.py`
-- **Description**: [Extension of step1 with additional features, e.g., "Enhanced beat creation with hyperparameter tuning."]
+- **Description**: The ECG.pkl (combined all ecg files), summary.pkl (combined all summary files) and glucose.pkl file. The Python file creates separate beats from all the input files. it checks for HRConfidence, and ECGnoise and also develops variable length beats. This will generate a hyper_label that corresponds to the hyper vs normal glucose classification problem
 - **Usage**: `python step1_create_beats_hyper.py [arguments]`
 
 ### `step2_PCA_mahlanobis_filtering.py`
