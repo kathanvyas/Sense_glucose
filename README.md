@@ -6,10 +6,15 @@ This project is a comprehensive suite for extracting ECG morphology, RR, and sta
 ##Repository Structure
 
 ### `Python Env Setup`
-Three env YAML files are provided under preprocess
+Three env YAML files are provided under the preprocess folder. You can pick any one file. you can create a new conda env using the following line in the terminal:
+`conda env create --name envname --file=environments.yml`
+These envs will help towards development. Please take care of the following important libraries:
+1) Numpy
+2) Pandas
+3) Neurokit 2
+4) Tensorflow with GPU capabilities
 
-
-### `preprocessing data`
+### `Preprocessing data`
 Zephyr BioHarness provides the following files: 
 1) record_timestamp_ECG.csv
 2) record_timestamp_SummaryEnhanced.csv
@@ -19,14 +24,14 @@ You should also have one glucose file. Ensure the glucose file contains no missi
 Run the file preprocessing/ECG_read_and_combine.py -> This reads all ECG.csv files and combines them in one single pickle file.
 
 
-### `step1_create_beats.py`
+### `Step1_create_beats.py`
 - **Description**: The ECG.pkl (combined all ecg files), summary.pkl (combined all summary files) and glucose.pkl file. The Python file creates separate beats from all the input files. it checks for HRConfidence, and ECGnoise and also develops variable length beats. This will generate a hypo_label that corresponds to the hypo vs normal glucose classification problem
-- **Usage**: `python step1_create_beats.py [arguments]`
-- **Key Functions**: [List key functions, e.g., "create_beats", "filter_noise"]
+
+- **Key Functions**: 
 
 ### `step1_create_beats_hyper.py`
 - **Description**: The ECG.pkl (combined all ecg files), summary.pkl (combined all summary files) and glucose.pkl file. The Python file creates separate beats from all the input files. it checks for HRConfidence, and ECGnoise and also develops variable length beats. This will generate a hyper_label that corresponds to the hyper vs normal glucose classification problem
-- **Usage**: `python step1_create_beats_hyper.py [arguments]`
+
 
 ### `step2_PCA_mahlanobis_filtering.py`
 - **Description**: [Details of PCA and Mahalanobis filtering, e.g., "Applies PCA for dimensionality reduction and Mahalanobis distance for anomaly detection."]
