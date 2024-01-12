@@ -44,7 +44,7 @@ def calculate_distance_based_on_PCA(data,title,silent_plot=1):
     e = pca.explained_variance_
 
     explained_variance = np.cumsum(pca.explained_variance_ratio_)
-    num_components = np.argmax(explained_variance >= 0.99) + 1
+    num_components = np.argmax(explained_variance >= 0.90) + 1
     print(f'Number of PCs that cover ~100% variance: {num_components}')
 
     coff = num_components
