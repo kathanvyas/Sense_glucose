@@ -284,152 +284,152 @@ f_filtered.to_pickle(f'/mnt/nvme-data1/Kathan/QT_correction/PCA data_hyper/c{c}s
 
 #%%
 
-perform_regression1(f,test='RT')
-perform_regression1(f_filtered,test='RT')
+# perform_regression1(f,test='RT')
+# perform_regression1(f_filtered,test='RT')
 
 
 
-#%%
-import statsmodels.formula.api as smf
-d1 = f
-d1[['rr', 'RT', 'QT']] *= 1000
-model = smf.mixedlm("RT ~ rr + glucose", d1, groups=d1["hypo_label"])
-result = model.fit()
-print(result.summary())
+# #%%
+# import statsmodels.formula.api as smf
+# d1 = f
+# d1[['rr', 'RT', 'QT']] *= 1000
+# model = smf.mixedlm("RT ~ rr + glucose", d1, groups=d1["hypo_label"])
+# result = model.fit()
+# print(result.summary())
 
-d2 = f_filtered
-d2[['rr', 'RT', 'QT']] *= 1000
-model1 = smf.mixedlm("RT ~ rr + glucose", d2, groups=d2["hypo_label"])
-result1 = model1.fit()
-print(result1.summary())
-
-
-
-#%%
-
-f.to_pickle(f'/mnt/nvme-data1/Kathan/QT_correction/PCA data/c{c}s{s:02d}_f_df.pkl')
-f_filtered.to_pickle(f'/mnt/nvme-data1/Kathan/QT_correction/PCA data/c{c}s{s:02d}_filtered_df.pkl')
-
-#%%
-
-f1 = f[['rr','RT','QT','glucose','hypo_label']]
-f_filtered1 = f_filtered[['rr','RT','QT','glucose','hypo_label']]
-
-f1.to_csv(f'/home/grads/k/kathan/Warwick/QT_correction/filtered_dfs/c{c}s{s:02d}_f_df.csv',index=False)
-f_filtered1.to_csv(f'/home/grads/k/kathan/Warwick/QT_correction/filtered_dfs/c{c}s{s:02d}_filtered_df.csv',index=False)
-
-
-#%%
-###### Linear Regression
-perform_regression1(f95,test='RT')
-perform_regression1(f95_filtered,test='RT')
-
-#%%
-
-#%%
-#f_filtered = f_filtered[f_filtered['RT'] <=0.5]
-red_data = f_filtered[f_filtered['hypo_label'] == 1]['RT']
-blue_data = f_filtered[f_filtered['hypo_label'] == 0]['RT']
-
-# Create a histogram with color coding
-plt.hist(red_data, color='red', alpha=0.4, label='Hypo', bins=35, edgecolor='black')
-plt.hist(blue_data, color='blue', alpha=0.4, label='Normal', bins=35, edgecolor='black')
-# plt.axvline(mean_0,c='blue')
-# plt.axvline(mean_1,c='red')
-# Add labels and title
-plt.xlabel('RT')
-plt.ylabel('Frequency')
-plt.title('Distribution of RT')
-plt.legend()
-
-# Show the histogram
-plt.show()
-
-#%%
-#f = f[f['RT'] <=0.5]
-red_data = f[f['hypo_label'] == 1]['RT']
-blue_data = f[f['hypo_label'] == 0]['RT']
-
-# Create a histogram with color coding
-plt.hist(red_data, color='red', alpha=0.4, label='Hypo', bins=35, edgecolor='black')
-plt.hist(blue_data, color='blue', alpha=0.4, label='Normal', bins=35, edgecolor='black')
-# plt.axvline(mean_0,c='blue')
-# plt.axvline(mean_1,c='red')
-# Add labels and title
-plt.xlabel('RT')
-plt.ylabel('Frequency')
-plt.title('Distribution of RT')
-plt.legend()
-
-# Show the histogram
-plt.show()
-
-#%%
-mean_vals = f_filtered.iloc[:,:200].mean(axis=0)
-std_vals = f_filtered.iloc[:,:200].std(axis=0)
-
-x_values = np.arange(len(mean_vals))  # Generate x-axis values
-# Plotting
-#plt.title(f'Average ECG beat and STD for {hr-5}<=HR<{hr+5} (10,000 samples)')
-plt.ylabel('ECG amplitude (mV)')
-plt.xlabel('Time (s)')
-plt.plot(x_values, mean_vals, color='blue')
-plt.fill_between(x_values, mean_vals - std_vals, mean_vals + std_vals, alpha=0.2, color='blue')
-plt.show()
+# d2 = f_filtered
+# d2[['rr', 'RT', 'QT']] *= 1000
+# model1 = smf.mixedlm("RT ~ rr + glucose", d2, groups=d2["hypo_label"])
+# result1 = model1.fit()
+# print(result1.summary())
 
 
 
-#%%
-perform_regression(df,test='RT')
-#%%
-# %%
-from IPython import display
-import time
-for i, row in e1_105.iterrows():
-    if i%50==0:
-        # Create a new figure and axis
-        fig, ax = plt.subplots()
+# #%%
 
-        # Plot the row data
-        ax.plot(row)
+# f.to_pickle(f'/mnt/nvme-data1/Kathan/QT_correction/PCA data/c{c}s{s:02d}_f_df.pkl')
+# f_filtered.to_pickle(f'/mnt/nvme-data1/Kathan/QT_correction/PCA data/c{c}s{s:02d}_filtered_df.pkl')
 
-        # Set appropriate labels and title
-        ax.set_xlabel('X-axis')
-        ax.set_ylabel('Y-axis')
-        ax.set_title(f'Row {i+1}')
+# #%%
 
-        # Display the plot
-        display.display(fig)
-        display.clear_output(wait=True)
+# f1 = f[['rr','RT','QT','glucose','hypo_label']]
+# f_filtered1 = f_filtered[['rr','RT','QT','glucose','hypo_label']]
 
-        # Pause for 0.2 seconds
-        time.sleep(0.000001)
-        plt.close(fig)
-    else:
-        continue
-# %%
-fig, ax = plt.subplots()
-
-# Plot the row data
-ax.plot(e1_95.iloc[5,:])
-
-# Set appropriate labels and title
-ax.set_xlabel('ECG samples')
-ax.set_ylabel('ECG-Amplitude')
+# f1.to_csv(f'/home/grads/k/kathan/Warwick/QT_correction/filtered_dfs/c{c}s{s:02d}_f_df.csv',index=False)
+# f_filtered1.to_csv(f'/home/grads/k/kathan/Warwick/QT_correction/filtered_dfs/c{c}s{s:02d}_filtered_df.csv',index=False)
 
 
-# %%
-plt.figure()
-plt.plot(np.sort(e105['d']))
-plt.title(f'Sorted distances')
-plt.xlabel('Beat Index')
-plt.ylabel('Distance')
-# %%
-e105['log_d'] = np.log2(e105['d'])
-# %%
-plt.figure()
-plt.plot(np.sort(e105['log_d']))
-plt.title(f'Sorted distances')
-plt.xlabel('Beat Index')
-plt.ylabel('Distance')
-# %%
+# #%%
+# ###### Linear Regression
+# perform_regression1(f95,test='RT')
+# perform_regression1(f95_filtered,test='RT')
+
+# #%%
+
+# #%%
+# #f_filtered = f_filtered[f_filtered['RT'] <=0.5]
+# red_data = f_filtered[f_filtered['hypo_label'] == 1]['RT']
+# blue_data = f_filtered[f_filtered['hypo_label'] == 0]['RT']
+
+# # Create a histogram with color coding
+# plt.hist(red_data, color='red', alpha=0.4, label='Hypo', bins=35, edgecolor='black')
+# plt.hist(blue_data, color='blue', alpha=0.4, label='Normal', bins=35, edgecolor='black')
+# # plt.axvline(mean_0,c='blue')
+# # plt.axvline(mean_1,c='red')
+# # Add labels and title
+# plt.xlabel('RT')
+# plt.ylabel('Frequency')
+# plt.title('Distribution of RT')
+# plt.legend()
+
+# # Show the histogram
+# plt.show()
+
+# #%%
+# #f = f[f['RT'] <=0.5]
+# red_data = f[f['hypo_label'] == 1]['RT']
+# blue_data = f[f['hypo_label'] == 0]['RT']
+
+# # Create a histogram with color coding
+# plt.hist(red_data, color='red', alpha=0.4, label='Hypo', bins=35, edgecolor='black')
+# plt.hist(blue_data, color='blue', alpha=0.4, label='Normal', bins=35, edgecolor='black')
+# # plt.axvline(mean_0,c='blue')
+# # plt.axvline(mean_1,c='red')
+# # Add labels and title
+# plt.xlabel('RT')
+# plt.ylabel('Frequency')
+# plt.title('Distribution of RT')
+# plt.legend()
+
+# # Show the histogram
+# plt.show()
+
+# #%%
+# mean_vals = f_filtered.iloc[:,:200].mean(axis=0)
+# std_vals = f_filtered.iloc[:,:200].std(axis=0)
+
+# x_values = np.arange(len(mean_vals))  # Generate x-axis values
+# # Plotting
+# #plt.title(f'Average ECG beat and STD for {hr-5}<=HR<{hr+5} (10,000 samples)')
+# plt.ylabel('ECG amplitude (mV)')
+# plt.xlabel('Time (s)')
+# plt.plot(x_values, mean_vals, color='blue')
+# plt.fill_between(x_values, mean_vals - std_vals, mean_vals + std_vals, alpha=0.2, color='blue')
+# plt.show()
+
+
+
+# #%%
+# perform_regression(df,test='RT')
+# #%%
+# # %%
+# from IPython import display
+# import time
+# for i, row in e1_105.iterrows():
+#     if i%50==0:
+#         # Create a new figure and axis
+#         fig, ax = plt.subplots()
+
+#         # Plot the row data
+#         ax.plot(row)
+
+#         # Set appropriate labels and title
+#         ax.set_xlabel('X-axis')
+#         ax.set_ylabel('Y-axis')
+#         ax.set_title(f'Row {i+1}')
+
+#         # Display the plot
+#         display.display(fig)
+#         display.clear_output(wait=True)
+
+#         # Pause for 0.2 seconds
+#         time.sleep(0.000001)
+#         plt.close(fig)
+#     else:
+#         continue
+# # %%
+# fig, ax = plt.subplots()
+
+# # Plot the row data
+# ax.plot(e1_95.iloc[5,:])
+
+# # Set appropriate labels and title
+# ax.set_xlabel('ECG samples')
+# ax.set_ylabel('ECG-Amplitude')
+
+
+# # %%
+# plt.figure()
+# plt.plot(np.sort(e105['d']))
+# plt.title(f'Sorted distances')
+# plt.xlabel('Beat Index')
+# plt.ylabel('Distance')
+# # %%
+# e105['log_d'] = np.log2(e105['d'])
+# # %%
+# plt.figure()
+# plt.plot(np.sort(e105['log_d']))
+# plt.title(f'Sorted distances')
+# plt.xlabel('Beat Index')
+# plt.ylabel('Distance')
+# # %%
