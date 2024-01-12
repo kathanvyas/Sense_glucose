@@ -12,13 +12,13 @@ from skimage.util.shape import view_as_windows as viewW
 
 c=1
 s=1
-read_path = f'/mnt/nvme-data1/Kathan/main_data/main_data_separate_files/cohort{c}/c{c}s{s:02d}/'
+read_path = f'<PATH TO COHORTS OR SUBJECT FILES>/cohort{c}/c{c}s{s:02d}/'
 
 
 #%%
-df_ecg = pd.read_pickle(read_path + 'allraw_ECG.pkl')
-df_ecg = df_ecg.reset_index(drop = True)
-d = df_ecg['EcgWaveform']
+df_ecg = pd.read_pickle(read_path + 'allraw_ECG.pkl')       ## READING ALL raw ECG FILE
+df_ecg = df_ecg.reset_index(drop = True)                    ## Reset index to avoid duplications
+d = df_ecg['EcgWaveform']                                   ## Filtering only ECG waveform data 
 d = np.asarray(d)
 idx = np.arange(len(d))
 ecg = nk.ecg_clean(d, sampling_rate=250)
