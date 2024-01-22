@@ -61,7 +61,7 @@ if __name__ == "__main__":
     print("--- {:.3f} seconds ---".format(time.time() - start_time))
 
     # ask if need to regenerate the check file
-    checkfile_path = os.path.join(out_folder, "c{}s{:02d}_check.pkl".format(cohort_id, subject_id))
+    checkfile_path = os.path.join(out_folder, "checkfile.pkl".format(cohort_id, subject_id))
     if os.path.exists(checkfile_path):
         print("Check file exists, do you want to regenerate it? (y/n)")
         ans = input()
@@ -91,7 +91,6 @@ if __name__ == "__main__":
     print("===========================================")
     print("Clean the rows that have r, t out of range")
     cleaned_final_df = clean_negative_values(final_df)
-    cleaned_final_df.to_pickle(os.path.join(out_folder, "final.pkl"))
 
     print("===========================================")
     print("Saving all the files:")

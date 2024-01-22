@@ -1,77 +1,67 @@
-# Zephyr_ECG_Summary_Glucose data processing
+# ECG Processing
 
-## Overview
-This project is a comprehensive suite for extracting ECG morphology, RR, and statistical features from Zephyr devices. It is structured in a series of steps, each encapsulated in individual Python scripts, to provide a modular and easy-to-understand approach to creating datasets to feed to DL networks. The repository contains code for the TAMU-Sense Project. Contains code from reading the ECG-Sumamry file from the Zephyr folder and then processing it with the reading glucose file. The code contains all necessary functions, from reading to creating a dataset before feeding it to CNN and RNN networks.
+## Get Started
+### Installation
+1. Clone the repository
+```
+git clone https://github.com/Morris88826/Sense_glucose.git
+cd Sense_glucose
+```
+2. Install dependent packages
+```
+conda create --name ecg python=3.11
+conda activate ecg
+pip install -r requirements.txt
+```
+### Download the Data
+We uses the data in the **TCH: Cohort 1 Data** and **TCH: Cohort 2 Data** folder from the **[SeNSE TAMU](https://drive.google.com/drive/folders/1Pts4PLTFIYqpPU53k8ZE4H-J4zZNH-WY?usp=drive_link)** team drive.
+* Please reach out to Professor [Gutierrez-Osuna](mailto:rgutier@cse.tamu.edu) at the PSI Lab in the Department of Computer Science & Engineering at Texas A&M University if you wish to access the ECG data.
 
-##Repository Structure
+There should be five subject folders (S01-S05) in both **TCH: Cohort 1 Data** and **TCH: Cohort 2 Data** respectively. We only need the ***zephyr*** and ***cgm*** folders from each.
+* For zephyr: download all folders inside
+* For cgm: There should be one Clarity_report_..._.csv file
 
-### `Python Env Setup`
-Three env YAML files are provided under the preprocess folder. You can pick any one file. you can create a new conda env using the following line in the terminal:
-`conda env create --name envname --file=environments.yml`
-These envs will help towards development. Please take care of the following important libraries:
-1) Numpy
-2) Pandas
-3) Neurokit 2
-4) Tensorflow with GPU capabilities
+Download all the data and put them in the same folder. For example:
 
-### `Preprocessing data`
-Zephyr BioHarness provides the following files: 
-1) record_timestamp_ECG.csv
-2) record_timestamp_SummaryEnhanced.csv
+- SeNSE
+  - TCH
+    - cohort1
+      - s01
+        - 2022_06_08-13_32_45
+        - 2022_06_08-17_47_46
+        - ...
+        - Clarity_Export_C01S01_2022-07-05.csv
+      - s02
+    - cohort2
 
-You should also have one glucose file. Ensure the glucose file contains no missing values and only numerical values in the glucose column. you can use preprocessing/helper_glucose.py
+## Preprocessing
+After downloading all the data and placed in the files structure mentioned above, please run the following command for data preprocessing.
 
-Run the file preprocessing/ECG_read_and_combine.py -> This reads all ECG.csv files and combines them in one single pickle file.
+This reads all \*_ECG.csv/\*_SummaryEnhanced.csv files in the folder and combines them in one single pickle file respectively (ECG.pkl, summary.pkl). It also convert the raw glucose metadata file into the desired glucose file format (glucose.pkl).
 
+```
+python libs/preprocess.py --folder_path <folder_path> --glucose_path <glucose_path>
+```
+- **folder_path**: The folder path containing all the downloaded ECG and summary files for each subject. 
+    - Ex: "./SeNSE/TCH/cohort1/s01".
+- **glucose_path**: The path towards the raw glucose metadata file, i.e. the clarity report. 
+    - Ex: "./SeNSE/TCH/cohort1/s01/Clarity_Export_C01S01_2022-07-05.csv"
+- out_folder: Optional. If not provided, it be the same as the folder_path. This is the where the preprocessed **ECG.pkl**, **summary.pkl**, and **glucose.pkl** are saved.
 
-### `Step1_create_beats.py`
-- **Description**: The ECG.pkl (combined all ecg files), summary.pkl (combined all summary files) and glucose.pkl file. The Python file creates separate beats from all the input files. it checks for HRConfidence, and ECGnoise and also develops variable length beats. This will generate a hypo_label that corresponds to the hypo vs normal glucose classification problem
+## Process the raw data into ECG beats 
+After the preprocessing step is complete, we can begin processing the data by running the command:
 
-- **Key Functions**: 
+```
+python main.py --input_folder <input_folder> --out_folder <out_folder>
+```
+- **input_folder**: The folder where the ECG.pkl, summary.pkl, and glucose.pkl are saved, i.e. the out_folder path in the preprocessing step.
+    - Ex: “./SeNSE/TCH/cohort1/s01”.
+- **out_folder**: This is the folder where all the final extracted ECG beat data is stored. It will create the cohort and subject folder automatically based on your input_folder.
+    - Ex: Create a new folder, **TCH_processed**, under the "SeNSE" folder, i.e. “./SeNSE/TCH_processed”.
 
-### `step1_create_beats_hyper.py`
-- **Description**: The ECG.pkl (combined all ecg files), summary.pkl (combined all summary files) and glucose.pkl file. The Python file creates separate beats from all the input files. it checks for HRConfidence, and ECGnoise and also develops variable length beats. This will generate a hyper_label that corresponds to the hyper vs normal glucose classification problem
+The processed ecg beats data (**c1s01.pkl**, **c1s01_hypo.pkl**, **c1s01_normal.pkl**) will be stored under "./SeNSE/TCH_processed/c1s01" for the example above.
 
-
-### `step2_PCA_mahlanobis_filtering.py`
-- **Description**: [Details of PCA and Mahalanobis filtering, e.g., "Applies PCA for dimensionality reduction and Mahalanobis distance for anomaly detection."]
-- **Usage**: `python step2_PCA_mahlanobis_filtering.py [arguments]`
-
-### `step3_PCA_PAD_beats_creation.py`
-- **Description**: [Integration of PCA and PAD in beat creation, e.g., "Combines PCA with PAD for optimized beat creation."]
-- **Usage**: `python step3_PCA_PAD_beats_creation.py [arguments]`
-
-### `step4_Model_CNN.py`
-- **Description**: [CNN model implementation, e.g., "Implements a Convolutional Neural Network for pattern recognition."]
-- **Usage**: `python step4_Model_CNN.py [arguments]`
-
-### `step4_model_cnn_fixedwindow.py`
-- **Description**: [CNN with a fixed window, e.g., "CNN model adapted to a fixed window size for uniform input processing."]
-- **Usage**: `python step4_model_cnn_fixedwindow.py [arguments]`
-
-### `step5_creating_data_for_RNN.py`
-- **Description**: [Data preparation for RNN, e.g., "Prepares and structures data for Recurrent Neural Network processing."]
-- **Usage**: `python step5_creating_data_for_RNN.py [arguments]`
-
-## Installation
-Provide details on how to set up the environment for running these scripts. Include instructions for installing dependencies, setting up virtual environments, etc.
-
-## How to Contribute
-Instructions for how others can contribute to this project. Include guidelines for coding standards, pull request process, etc.
-
-## License
-Specify the license under which this project is released.
-
-## Contact
-Provide your contact information or a way for users to reach out with questions or contributions.
-
----
-
-### Enhancing the README with Graphics
-
-1. **Flowchart**: Include a flowchart at the start to visually depict the flow of the scripts.
-2. **Screenshots**: Add screenshots of the script outputs or visualizations they produce.
-3. **Code Snippets**: Use markdown code blocks to highlight important code snippets or usage examples.
-
----
-
+Here is an example of the beat extracted.
+<p align="center">
+    <img src="https://hackmd.io/_uploads/Hkre912ta.png"  width="50%">
+</p>
