@@ -63,5 +63,8 @@ The processed ecg beats data (**c1s01.pkl**, **c1s01_hypo.pkl**, **c1s01_normal.
 
 Here is an example of the beat extracted.
 <p align="center">
-    <img src="https://hackmd.io/_uploads/Hkre912ta.png"  width="50%">
+    <img src="https://github.com/kathanvyas/Sense_glucose/assets/32810188/7a58b591-615a-4440-90b7-f420e8f40ef1"  width="50%">
 </p>
+
+
+
