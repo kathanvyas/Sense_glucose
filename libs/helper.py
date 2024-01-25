@@ -204,7 +204,7 @@ def generate_beats(ecg, df, sampling_rate = 250):
 
     return df_ecg_final
 
-def plot_beat(beats, row_index, out_dir, num_samples=200):
+def plot_beat(beats, row_index, out_path, num_samples=200):
     # Plot the ECG beat
     print("Show sample ECG beat ...")
     # Get the values from the selected row
@@ -227,7 +227,7 @@ def plot_beat(beats, row_index, out_dir, num_samples=200):
         plt.scatter(valt, beats.at[row_index,valt], c=color_dict['t'], s=20, label='t')
     plt.legend()
     plt.title("Sample ECG beat: Row {}".format(row_index))
-    plt.savefig(os.path.join(out_dir, "beat.png"))
+    plt.savefig(out_path)
 
 
 def combine_with_summary_glucose(ecg_df_final, summary_df, glucose_df):

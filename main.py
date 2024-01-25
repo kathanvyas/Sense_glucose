@@ -82,7 +82,7 @@ if __name__ == "__main__":
     ecg_df_final.to_pickle(os.path.join(out_folder, "beats.pkl"))
     print("--- {:.3f} seconds ---".format(time.time() - start_time))
     random_row = np.random.randint(0, len(ecg_df_final))
-    plot_beat(ecg_df_final, random_row, demo_folder)
+    plot_beat(ecg_df_final, random_row, os.path.join(demo_folder, "beat.png"))
 
     print("===========================================")
     print("Combining with ecg, summary, and glucose")
