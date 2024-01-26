@@ -293,6 +293,7 @@ def plot_alignment_beats(beats, row_indices, out_path, num_samples=200):
     plt.scatter(valts[:,0], valts[:,1], c=color_dict['t'], s=20, label='t')
 
     plt.legend()
+    plt.grid(True)   
     plt.title("Sample Aligned ECG beats")
     plt.savefig(out_path)
 

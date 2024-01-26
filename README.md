@@ -71,5 +71,26 @@ Here is an example of the beat extracted.
     <img src="https://github.com/kathanvyas/Sense_glucose/assets/32810188/7a58b591-615a-4440-90b7-f420e8f40ef1"  width="50%">
 </p>
 
+## R peak alignments
+We also provide the script for aligning the R peak for all the ecg data.
+
+Run the following command for alignment:
+```
+python alignment.py --ecg <ecg_file> --all_ecg <all_ecg_folder> --r_peak_pos <target_r_peak_pos> --out_folder <out_folder>
+```
+- **ecg_file**: The file of the processed ecg beats (from the previous section)
+    - Ex: “./SeNSE/TCH_processed/c1s01/c1s01.pkl”.
+- **all_ecg_folder**: The folder storing all the processed ecg beats files
+    - Ex: "./SeNSE/TCH_processed"
+- **target_r_peak_pos**: The position where the aligned R peak should be. If not provided, it will be calculated from the average among all the processed data.
+    - Ex: 59 (Mean: 59.41, Std: 14.82 from all the processed ecg data)
+- **out_folder**: This is the folder where all the final aligned ECG beat data is stored.
+    - Ex: “./SeNSE/TCH_aligned”.
+
+Here are the aligned result:
+- Before alignment vs Post alignment
+![alignment](https://hackmd.io/_uploads/SJR-8U-q6.png)
+- All aligned ecg data
+![ecg_aligned](https://hackmd.io/_uploads/Bk6zoUW56.png)
 
 

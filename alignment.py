@@ -1,5 +1,6 @@
 import os
 import tqdm
+import glob
 import argparse
 import numpy as np
 import pandas as pd
@@ -56,13 +57,43 @@ def show_aligned_demo(row_data, row_data_aligned, sampling_rate=250):
     plt.grid(True)
     plt.savefig("./demo/alignment.png", dpi=300)  # Save with high DPI    
 
+def analyze_average_r_peak_position(processed_ecg_folder):
+    # get the average R peak position
+    print("Analyzing target r peak position...")
+
+    folders = glob.glob(os.path.join(processed_ecg_folder, "*"))
+    r_peak_positions = []
+
+    for folder in tqdm.tqdm(folders):
+        basename = os.path.basename(folder)
+        df = pd.read_pickle(os.path.join(folder, "{}.pkl".format(basename)))
+
+        _r_peak_positions = df['r'].to_list()
+        r_peak_positions += _r_peak_positions
+
+    r_peak_positions = np.array(r_peak_positions)
+    print("R peak's position: ", r_peak_positions)
+    print('R shape: ', r_peak_positions.shape)
+    print("R peak's avg position: ", r_peak_positions.mean())
+    print("R peak's std position: ", r_peak_positions.std())
+    print("====================================")
+
+    return int(r_peak_positions.mean())
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("This is the script for aligning the R peaks for each ECG signal")
     parser.add_argument('--ecg', type=str, help='path to the processed ecg data')
+    parser.add_argument('--all_ecg', default="/mnt/data2/mtseng/dataset/SeNSE/TCH_processed", type=str, help='path to the folder that stores all the processed ecg data')
+    parser.add_argument('--r_peak_pos', default=None, type=int, help='target position of the R peak, if not provided, will analyze the average R peak position from all the processed ecg data')
     parser.add_argument('--out_folder', default="/mnt/data2/mtseng/dataset/SeNSE/TCH_aligned", type=str, help='path to the output aligned R peak folder')
     args = parser.parse_args()
+    
+    aligned_r_peak_pos = args.r_peak_pos
+    if aligned_r_peak_pos is None:
+        aligned_r_peak_pos = analyze_average_r_peak_position(args.all_ecg)
 
-    print("Reading data from {}".format(args.ecg))
+    print("Reading data from {} ~".format(args.ecg))
+    print("Target R peak position: {}".format(aligned_r_peak_pos))
     df = pd.read_pickle(args.ecg)
     # I think its already sorted, but just in case
     df.sort_values('Time', inplace=True) 
@@ -85,11 +116,6 @@ if __name__ == "__main__":
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)
 
-    # get the R peak's position
-    aligned_r_peak_pos = int(df['r'].to_numpy().mean())
-    print("R peak's avg position: ", aligned_r_peak_pos)
-
-    
     # create an empty dataframe to store the aligned R peaks, only keep the "glucose", "time" columns that are needed
     sampling_rate = 250
     columns = list(np.arange(sampling_rate))
