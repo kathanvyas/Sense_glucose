@@ -5,6 +5,32 @@ import pandas as pd
 import neurokit2 as nk
 import matplotlib.pyplot as plt
 
+def align_ecg(row_data, target_r_peak, sampling_rate=250):
+    r_peak = row_data['r']
+    displacement = target_r_peak - r_peak
+
+    ecg_data = np.array(row_data[:sampling_rate])
+    aligned_ecg_data = np.roll(ecg_data, displacement)
+    if displacement > 0:
+        aligned_ecg_data[:displacement] = 0
+    elif displacement < 0:
+        aligned_ecg_data[displacement:] = 0
+
+    aligned_p = int(row_data['p'] + displacement)
+    aligned_q = int(row_data['q'] + displacement)
+    aligned_r = int(row_data['r'] + displacement)
+    aligned_t = int(row_data['t'] + displacement)
+    aligned_time = row_data['Time']
+    aligned_glucose = row_data['glucose']
+    aligned_flag = row_data['flag']
+    aligned_hypo_label = row_data['hypo_label']
+
+    # append the aligned data to the dataframe
+    aligned_row = aligned_ecg_data.tolist()
+    aligned_row.extend([aligned_p, aligned_q, aligned_r, aligned_t, aligned_time, aligned_glucose, aligned_flag, aligned_hypo_label])
+
+    return aligned_row
+
 def load_checkfile(ecg_df, out_path, regenerate=False):
 
     ecg_df = ecg_df.reset_index(drop=True)
@@ -227,6 +253,47 @@ def plot_beat(beats, row_index, out_path, num_samples=200):
         plt.scatter(valt, beats.at[row_index,valt], c=color_dict['t'], s=20, label='t')
     plt.legend()
     plt.title("Sample ECG beat: Row {}".format(row_index))
+    plt.savefig(out_path)
+
+def plot_alignment_beats(beats, row_indices, out_path, num_samples=200):
+    # Plot the ECG beat
+    print("Show sample ECG beat ...")
+    # create color dictionary
+    color_dict = dict({'p':'red', 'q':'blue', 'r':'green', 's':'orange', 't':'purple'})
+    valps = []
+    valqs = []
+    valrs = []
+    valts = []
+    for row_index in row_indices:
+        # Get the values from the selected row
+        valp = beats.at[row_index,'p']
+        valq = beats.at[row_index,'q']
+        valr = beats.at[row_index,'r']
+        valt = beats.at[row_index,'t']
+        print("Row: {}, p: {}, q: {}, r: {}, t: {}".format(row_index, valp, valq, valr, valt))
+        # Plot line chart for the selected row
+        plt.plot(beats.iloc[row_index,:num_samples])
+        if valp >= 0 and valp < num_samples:
+            valps.append([valp, beats.at[row_index,valp]])
+        if valq >= 0 and valq < num_samples:
+            valqs.append([valq, beats.at[row_index,valq]])
+        if valr >= 0 and valr < num_samples:
+            valrs.append([valr, beats.at[row_index,valr]])
+        if valt >= 0 and valt < num_samples:
+            valts.append([valt, beats.at[row_index,valt]])
+    
+    valps = np.array(valps)
+    valqs = np.array(valqs)
+    valrs = np.array(valrs)
+    valts = np.array(valts)
+
+    plt.scatter(valps[:,0], valps[:,1], c=color_dict['p'], s=20, label='p')
+    plt.scatter(valqs[:,0], valqs[:,1], c=color_dict['q'], s=20, label='q')
+    plt.scatter(valrs[:,0], valrs[:,1], c=color_dict['r'], s=20, label='r')
+    plt.scatter(valts[:,0], valts[:,1], c=color_dict['t'], s=20, label='t')
+
+    plt.legend()
+    plt.title("Sample Aligned ECG beats")
     plt.savefig(out_path)
 
 

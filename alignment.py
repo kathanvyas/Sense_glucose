@@ -4,6 +4,7 @@ import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from libs.helper import align_ecg
 
 def show_aligned_demo(row_data, row_data_aligned, sampling_rate=250):
     ecg_data = np.array(row_data[:sampling_rate])
@@ -13,17 +14,36 @@ def show_aligned_demo(row_data, row_data_aligned, sampling_rate=250):
     plt.plot(np.arange(ecg_data.shape[0]), ecg_data, label="ECG Original", color='grey')
     plt.plot(np.arange(aligned_ecg_data.shape[0]), aligned_ecg_data, label="ECG Aligned", color='cyan')
 
+    valp = int(row_data['p'])
+    valq = int(row_data['q'])
+    valr = int(row_data['r'])
+    valt = int(row_data['t'])
+
+    valp_aligned = int(row_data_aligned['p'])
+    valq_aligned = int(row_data_aligned['q'])
+    valr_aligned = int(row_data_aligned['r'])
+    valt_aligned = int(row_data_aligned['t'])
+
     # Scatter plots with different markers and colors
-    plt.scatter(row_data['p'], ecg_data[int(row_data['p'])], color='green', marker='o', label="P Original")
-    plt.scatter(row_data['q'], ecg_data[int(row_data['q'])], color='blue', marker='x', label="Q Original")
-    plt.scatter(row_data['r'], ecg_data[int(row_data['r'])], color='red', marker='^', label="R Original")
-    plt.scatter(row_data['t'], ecg_data[int(row_data['t'])], color='purple', marker='s', label="T Original")
+    if valp >= 0 and valp < len(ecg_data):
+        plt.scatter(valp, ecg_data[valp], color='green', marker='o', label="P Original")
+    if valq >= 0 and valq < len(ecg_data):
+        plt.scatter(valq, ecg_data[valq], color='blue', marker='X', label="Q Original")
+    if valr >= 0 and valr < len(ecg_data):
+        plt.scatter(valr, ecg_data[valr], color='red', marker='v', label="R Original")
+    if valt >= 0 and valt < len(ecg_data):
+        plt.scatter(valt, ecg_data[valt], color='purple', marker='*', label="T Original")
 
     # Similar for aligned data with different marker styles
-    plt.scatter(row_data_aligned['p'], aligned_ecg_data[int(row_data_aligned['p'])], color='green', marker='P', label="P Aligned")
-    plt.scatter(row_data_aligned['q'], aligned_ecg_data[int(row_data_aligned['q'])], color='blue', marker='X', label="Q Aligned")
-    plt.scatter(row_data_aligned['r'], aligned_ecg_data[int(row_data_aligned['r'])], color='red', marker='v', label="R Aligned")
-    plt.scatter(row_data_aligned['t'], aligned_ecg_data[int(row_data_aligned['t'])], color='purple', marker='*', label="T Aligned")
+    if valp_aligned >= 0 and valp_aligned < len(aligned_ecg_data):
+        plt.scatter(valp_aligned, aligned_ecg_data[valp_aligned], color='green', marker='o', label="P Aligned")
+    if valq_aligned >= 0 and valq_aligned < len(aligned_ecg_data):
+        plt.scatter(valq_aligned, aligned_ecg_data[valq_aligned], color='blue', marker='X', label="Q Aligned")
+    if valr_aligned >= 0 and valr_aligned < len(aligned_ecg_data):
+        plt.scatter(valr_aligned, aligned_ecg_data[valr_aligned], color='red', marker='v', label="R Aligned")   
+    if valt_aligned >= 0 and valt_aligned < len(aligned_ecg_data):
+        plt.scatter(valt_aligned, aligned_ecg_data[valt_aligned], color='purple', marker='*', label="T Aligned")
+
 
     # Mark the R peak vertical line
     plt.axvline(x=row_data['r'], color='r', linestyle='--', label="R Peak Original")
@@ -74,38 +94,17 @@ if __name__ == "__main__":
     sampling_rate = 250
     columns = list(np.arange(sampling_rate))
     columns.extend(['p', 'q', 'r', 't', 'Time', 'glucose', 'flag', 'hypo_label'])
-    df_aligned = pd.DataFrame(columns=columns)
 
+    aligned_rows = []
     # iterate through each row in df
     for i in tqdm.tqdm(range(len(df))):
         row_data = df.iloc[i]
-        r_peak = df.iloc[i]['r']
-        displacement = aligned_r_peak_pos - r_peak
-
-        ecg_data = np.array(row_data[:sampling_rate])
-        aligned_ecg_data = np.roll(ecg_data, displacement)
-        if displacement > 0:
-            aligned_ecg_data[:displacement] = 0
-        elif displacement < 0:
-            aligned_ecg_data[displacement:] = 0
-
-        aligned_p = int(row_data['p'] + displacement)
-        aligned_q = int(row_data['q'] + displacement)
-        aligned_r = int(row_data['r'] + displacement)
-        aligned_t = int(row_data['t'] + displacement)
-        aligned_time = row_data['Time']
-        aligned_glucose = row_data['glucose']
-        aligned_flag = row_data['flag']
-        aligned_hypo_label = row_data['hypo_label']
-
-        # append the aligned data to the dataframe
-        aligned_row = aligned_ecg_data.tolist()
-        aligned_row.extend([aligned_p, aligned_q, aligned_r, aligned_t, aligned_time, aligned_glucose, aligned_flag, aligned_hypo_label])
-
-        df_aligned.loc[i] = aligned_row
+        aligned_row = align_ecg(row_data, aligned_r_peak_pos)
+        aligned_rows.append(aligned_row)
+    df_aligned = pd.DataFrame(aligned_rows, columns=columns)
 
     # save the aligned dataframe
-    df_aligned.to_pickle(os.path.join(out_dir, "{}_aligned.pkl".format(filename)))
+    df_aligned.to_pickle(os.path.join(out_dir, "{}.pkl".format(filename)))
 
     # pick a random row to show the alignment
     random_row = np.random.randint(0, len(df_aligned))
