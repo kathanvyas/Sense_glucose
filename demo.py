@@ -22,6 +22,7 @@ if __name__ == '__main__':
     
     # get the index of the random row
     idx = random.randint(0, len(df))
+    print(df.iloc[idx][:200])
     plot_beat(df, idx, "./demo/ecg.png")
 
    
