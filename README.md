@@ -89,8 +89,8 @@ python alignment.py --ecg <ecg_file> --all_ecg <all_ecg_folder> --r_peak_pos <ta
 
 Here are the aligned result:
 - Before alignment vs Post alignment
-![alignment](https://hackmd.io/_uploads/SJR-8U-q6.png)
+![alignment](https://github.com/kathanvyas/Zephyr-BioHArness-Data_Preprocess/assets/32810188/025f1d56-61ef-4c52-9f5f-d213b629cd50)
 - All aligned ecg data
-![ecg_aligned](https://hackmd.io/_uploads/Bk6zoUW56.png)
+![ecg_aligned](https://github.com/kathanvyas/Zephyr-BioHArness-Data_Preprocess/assets/32810188/660a9e0f-f803-4aa5-a754-91d4c969557f)
 
 
